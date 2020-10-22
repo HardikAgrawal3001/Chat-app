@@ -29,7 +29,6 @@ idna==2.10
 importlib-metadata==1.7.0
 itsdangerous==1.1.0
 Jinja2==2.11.1
-load==0.0.0
 MarkupSafe==1.1.1
 monotonic==1.5
 nexmo==2.5.2
