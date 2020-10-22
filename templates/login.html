@@ -1,0 +1,29 @@
+<center>
+<head>
+<title>Chat</title>
+</head>
+<body style="background-color:greenyellow;">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+    	{%if category=='danger' %}
+    		<p style="color:red;">{{message}}</p>
+    	{% elif category=='success'%}
+    		<p style="color:blue;">{{message}}</p>
+    	{% endif%}
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+<br>
+<br>
+<br>
+<br>
+<form method="POST">
+<h1>Username&nbsp;<input type="username" name="Username" required></h1>
+<h1>Password&nbsp;<input type="password" name="Password" required></h1>
+<button type="submit">Login</button>
+</form>
+<a href="/join"><h2>Login</h2></a><br><br><br><br><br>
+<a href="/register"><p>don't yet have account register to make account</p></a>
+</body>
+</center>

@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <title>Chat-in: {{ room }}</title>
+        <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+        <script type="text/javascript" charset="utf-8">
+            var socket;
+            $(document).ready(function(){
+                socket = io();
+                socket.on('connect', function() {
+                    socket.emit('joined', {});
+                });
+                socket.on('status', function(data) {
+					pel = document.createElement('p');
+				   pel.setAttribute('style','color:lightgreen; background-color:yellow;');
+				   pel.innerHTML = data.msg;
+				   document.getElementById('chat').appendChild(pel);
+                });
+                socket.on('message', function(data) {
+                    pel = document.createElement('p');
+				   pel.setAttribute('style','color:lightgreen;');
+				   pel.innerHTML = data.msg;
+				   document.getElementById('chat').appendChild(pel);
+                });
+                $('#text').keypress(function(e) {
+                    var code = e.keyCode || e.which;
+                    if (code == 13) {
+                        text = $('#text').val();
+                        $('#text').val('');
+                        socket.emit('text', {msg: text});
+                    }
+                });
+            });
+            function leave_room() {
+                socket.emit('left', {}, function() {
+                    socket.disconnect();
+
+                    // go back to the login page
+                    window.location.href = "{{ url_for('join') }}";
+                });
+            }
+			function rejoin_room() { 
+                    window.location.href = "{{ url_for('chat') }}";
+            }
+        </script>
+    </head>
+    <body style="background-color:greenyellow;">
+        <h1>Chat: {{ room }}</h1>
+        <div id="chat" style="background-color:yellow;"></div><br><br>
+        <input id="text" size="199" placeholder="Enter your message here" style="background-color:yellow;"><br><br>
+        <a href="/join" onclick="leave_room();">Leave this chat-room</a><br>
+		<a href="/chat" onclick="rejoin_room;">rejoin this chat-room</a>
+    </body>
+</html>

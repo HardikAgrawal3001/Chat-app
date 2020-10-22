@@ -1,0 +1,30 @@
+<center>
+<head>
+<title>Chat</title>
+</head>
+<body style="background-color:greenyellow;">
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+    	{%if category=='danger' %}
+    		<p style="color:red;">{{message}}</p>
+    	{% elif category=='success'%}
+    		<p style="color:blue;">{{message}}</p>
+    	{% endif%}
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+<br>
+<br>
+<br>
+<br>
+<form method="POST">
+<h1>Name&nbsp;<input type="text" name="Name" required></h1>
+<h1>Username&nbsp;<input type="username" name="Username" required></h1>
+<h1>Password&nbsp;<input type="password" name="Password" required></h1>
+<h1>Confirm Password&nbsp;<input type="password" name="Password1" required></h1>
+<button type="submit">Register</button>
+</form>
+<a href="/login"><h2>Register</h2>
+</body>
+</center>
