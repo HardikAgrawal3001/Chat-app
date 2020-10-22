@@ -21,6 +21,14 @@ class Users(db.Model):
     username = db.Column(db.String(255),nullable=False)
     password = db.Column(db.String(255),nullable=False)
 
+class Chat(db.Model):
+    __tablename__ = 'chat'
+    id = db.Column(db.Integer,primary_key=True,nullable=False)
+    from_username = db.Column(db.String(255),nullable=False)
+    to_username = db.Column(db.String(255),nullable=False)
+    message = db.Column(db.Text,nullable=False)
+    room = db.Column(db.String(255),nullable=False)
+
 class LoginForm(Form):
     """Accepts a nickname and a room."""
     name = StringField('Name', validators=[DataRequired()])
@@ -104,13 +112,15 @@ def get_the_code():
 
 @app.route('/chat')
 def chat():
-    """Chat room. The user's name and room must be stored in
-    the session."""
     name = session.get('name', '')
     room = session.get('room', '')
     if name == '' or room == '':
-        return redirect(url_for('.index'))
-    return render_template('chat.html', name=name, room=room)
+        return redirect(url_for('index'))
+    else:
+        room_obj = Chat.query.filter_by(room=room).all()
+        user_obj = Users.query
+        return render_template('chat.html', name=name, room=room,room_obj = room_obj,user_obj=user_obj) 
+
 
 @socketio.on('joined')
 def joined(message):
