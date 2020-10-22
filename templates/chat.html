@@ -46,7 +46,11 @@
     </head>
     <body style="background-color:greenyellow;">
         <h1>Chat: {{ room }}</h1>
-        <div id="chat" style="background-color:yellow;"></div><br><br>
+        <div id="chat" style="background-color:yellow;">
+            {%for message in room_obj%}
+                <p style='color:lightgreen;' >{{ user_obj.filter_by(username=mes).first(). }}:{{ message.text }}</p>
+            {% endfor %}
+        </div><br><br>
         <input id="text" size="199" placeholder="Enter your message here" style="background-color:yellow;"><br><br>
         <a href="/join" onclick="leave_room();">Leave this chat-room</a><br>
 		<a href="/chat" onclick="rejoin_room;">rejoin this chat-room</a>
