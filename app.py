@@ -31,22 +31,24 @@ class Chat(db.Model):
 
 class LoginForm(Form):
     """Accepts a nickname and a room."""
-    name = StringField('Name', validators=[DataRequired()])
     room = StringField('Room', validators=[DataRequired()])
     submit = SubmitField('Enter Chatroom')
 
 @app.route('/join', methods=['GET', 'POST'])
 def join():
     """Login form to enter a room."""
-    form = LoginForm()
-    if form.validate_on_submit():
-        session['name'] = form.name.data
-        session['room'] = form.room.data
-        return redirect(url_for('.chat'))
-    elif request.method == 'GET':
-        form.name.data = session.get('name', '')
-        form.room.data = session.get('room', '')
-    return render_template('join.html', form=form)
+    if 'user_id' not in session:
+        flash('Please Login')
+        return redirect('/login')
+    else:
+        form = LoginForm()
+        if form.validate_on_submit():
+            session['name'] = Users.query.filter_by(id=session['user_id']).first().name
+            session['room'] = form.room.data
+            return redirect(url_for('.chat'))
+        elif request.method == 'GET':
+            form.room.data = session.get('room', '')
+            return render_template('join.html', form=form)
 
 
 @app.route('/register',methods=["POST","GET"])
@@ -96,7 +98,7 @@ def login():
                 flash('Invalid Password','danger')
                 return redirect('/login')
             else:
-                session['userid'] = user_obj.id
+                session['user_id'] = user_obj.id
                 return redirect('/join')
 
 
@@ -136,6 +138,10 @@ def text(message):
     """Sent by a client when the user entered a new message.
     The message is sent to all people in the room."""
     room = session.get('room')
+    user_obj = Users.query.filter_by(id=session['user_id']).first()
+    chat_obj = Chat(from_username = user_obj.username,to_username="everyone",message=message,room=session['room'])
+    db.session.add(chat_obj)
+    db.session.commit()
     emit('message', {'msg': session.get('name') + ':' + message['msg']}, room=room)
 
 
