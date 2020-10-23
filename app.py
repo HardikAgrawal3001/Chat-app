@@ -139,7 +139,7 @@ def text(message):
     The message is sent to all people in the room."""
     room = session.get('room')
     user_obj = Users.query.filter_by(id=session['user_id']).first()
-    chat_obj = Chat(from_username = user_obj.username,to_username="everyone",message=message,room=session['room'])
+    chat_obj = Chat(from_username = user_obj.username,to_username="everyone",message=message['msg'],room=session['room'])
     db.session.add(chat_obj)
     db.session.commit()
     emit('message', {'msg': session.get('name') + ':' + message['msg']}, room=room)
